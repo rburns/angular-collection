@@ -201,9 +201,3 @@ describe 'collection', () ->
 		it 'returns the collection', () ->
 			result = stuff.not(things)
 			expect(result).to.deep.equal(stuff)
-
-	describe '#foo', () ->
-
-		it 'does something magic', () ->
-			stuff.foo()
-			expect(stuff).to.be('magic')
