@@ -4,6 +4,7 @@ describe 'collection', () ->
 	stuff = null
 	things = null
 	widgets = null
+	gadgets = null
 
 	api = ['get', 'put', 'exc', 'inc', 'int', 'not']
 	isCollection = (obj) ->
@@ -30,6 +31,11 @@ describe 'collection', () ->
 			{key: 2, content: 'berry'}
 			{key: 3, content: 'melon'}
 		])
+		gadgets = collection([
+			{id: 2, content: 'bar'}
+			{id: 5, content: 'cherry'}
+			{id: 6, content: 'bar'}
+		], {key: 'id'})
 		return
 
 	it 'is an array', () ->
@@ -62,6 +68,13 @@ describe 'collection', () ->
 			expect(result[0].content).to.equal('foo')
 			expect(result[1].content).to.equal('bar')
 
+		describe 'configurable key', () ->
+
+			it 'retrieves an object by key', () ->
+				result = gadgets.get(6)
+				expect(result.id).to.equal(6)
+				expect(result.content).to.equal('bar')
+
 	describe '#put', () ->
 
 		it 'adds an object to the collection', () ->
@@ -81,6 +94,13 @@ describe 'collection', () ->
 		it 'returns the collection', () ->
 			result = stuff.put {key: 4, content: 'boo'}
 			expect(result).to.deep.equal(stuff)
+
+		describe 'configurable key', () ->
+
+			it 'replaces an object if it exists in the collection', () ->
+				gadgets.put({id: 2, content: 'happy'});
+				expect(gadgets.length).to.equal(3);
+				expect(gadgets[0].content).to.equal('happy');
 
 	describe '#exc', () ->
 

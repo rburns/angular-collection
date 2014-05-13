@@ -4,8 +4,10 @@ angular.module('collection', [])
 
 .factory('collection', ['indexOfObj', 'clone', '$parse', function(indexOfObj, _clone, $parse){
 
+	var defaults = {key: "key"};
+
 	function clone() {
-		return collection(_clone(this));
+		return collection(_clone(this), this.opts);
 	}
 
 	function set(coll) {
@@ -58,7 +60,7 @@ angular.module('collection', [])
 	function get(key) {
 		if( angular.isArray(key) ) { return arrayGet(this, key); }
 
-		var idx = indexOfObj(this, 'key', key);
+		var idx = indexOfObj(this, this.opts.key, key);
 		if( idx === -1 ) { return undefined; }
 		else { return this[idx]; }
 	}
@@ -74,7 +76,7 @@ angular.module('collection', [])
 	function put(data) {
 		if( angular.isArray(data) ) { return arrayPut(this, data); }
 
-		var idx = indexOfObj(this, 'key', data.key);
+		var idx = indexOfObj(this, this.opts.key, data[this.opts.key]);
 		if( idx === -1 ) { this.push(data); }
 		else { this.splice(idx, 1, data); }
 		return this;
@@ -86,15 +88,19 @@ angular.module('collection', [])
 	}
 
 	function int(coll) {
-		return this.inc(coll.map(function(obj){ return ['key', obj.key]; }));
+		var opts = this.opts;
+		return this.inc(coll.map(function(obj){ return [opts.key, obj.key]; }));
 	}
 
 	function not(coll) {
-		return this.exc(coll.map(function(obj){ return ['key', obj.key]; }));
+		var opts = this.opts;
+		return this.exc(coll.map(function(obj){ return [opts.key, obj.key]; }));
 	}
 
-	function collection(data) {
+	function collection(data, options) {
 		var store = data || [];
+
+    store.opts = angular.extend({}, defaults, options || {});
 
 		store.clone = clone.bind(store);
 
